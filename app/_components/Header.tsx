@@ -1,0 +1,45 @@
+import React from 'react'
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+
+const menuOptions =  [
+  {
+    name:'Home',
+    path:'/'
+  },
+  {
+    name:'Pricing',
+    path:'/pricing'
+  },
+  {
+    name:'Contact Us',
+    path:'/contact-us'
+  }
+]
+const Header = () => {
+  return (
+    <div className='flex justify-between items-center p-4'>
+        {/* logo */}
+        <div className='flex gap-2 items-center'>
+            <Image src={'/logo.svg'} alt="Logo" width={49} height={48}/>
+           <h2 className='font-bold text-2xl'>AI Travel Planner</h2>
+        </div>
+        
+        {/*Menu Option*/}
+          <div className='flex gap-5 items-center'>
+            {menuOptions.map((menu, index) =>(
+              <Link key={index} href={menu.path}>
+                <h2 className='text-lg hover:scale-105 transition hover:text-primary'>{menu.name}</h2>
+              </Link>
+            ))}
+          </div>
+        {/*Get Started Button*/}
+
+        <Button>Get Started</Button>
+
+    </div>
+  )
+}
+
+export default Header
