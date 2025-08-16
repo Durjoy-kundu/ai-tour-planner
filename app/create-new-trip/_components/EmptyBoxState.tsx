@@ -16,7 +16,7 @@ const suggestions = [
         icon: <Landmark className='text-cyan-500 h-5 w-5'/>
     }
 ]
-const EmptyBoxState = () => {
+const EmptyBoxState = ({ onSelectOption }:any) => {
   return (
     <div className='mt-7'>
         <h2 className='font-bold text-3xl text-center'>Start Planning new <strong className='text-primary'>trip </strong>using AI</h2>
@@ -24,9 +24,11 @@ const EmptyBoxState = () => {
 
         <div className='flex flex-col gap-5 mt-5'>
             {suggestions.map((suggestion, index) => (
-                <div key={index} className='flex items-center gap-2 border rounded-full p-2 cursor-pointer hover:bg-primary hover:text-white transition-colors'>
+                <div key={index}
+                onClick={() => onSelectOption(suggestion.title)}
+                className='flex items-center gap-2 border rounded-full p-3 cursor-pointer hover:border-primary hover:text-primary transition-colors'>
                     {suggestion.icon}
-                    <h2 className='text-xl'>{suggestion.title}</h2>
+                    <h2 className='text-lg'>{suggestion.title}</h2>
                 </div>
             ))}
         </div>

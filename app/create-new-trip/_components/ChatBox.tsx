@@ -7,10 +7,13 @@ import {Loader, Send} from 'lucide-react';
 import { useState } from 'react';
 import axios from 'axios';
 import EmptyBoxState from './EmptyBoxState';
+import GroupSizeUi from './GroupSizeUi';
+import BudgetUi from './BudgetUi';
 
 type Message = {
     role:string,
-    content:string
+    content:string,
+    ui?: string,
 }
 
 const ChatBox = () => {
@@ -34,15 +37,30 @@ const ChatBox = () => {
 
         setMessages((prev:Message[]) => [...prev,{
             role:'assistant',
-            content: result?.data?.resp
+            content: result?.data?.resp,
+            ui: result?.data?.ui
         }]);
         console.log(result.data);
         setLoading(false);
     }
 
+    const RenderGenerativeUi = (ui:string) => {
+        if(ui=='budget'){
+             return <BudgetUi onSelectedOption = {(value:string) => {setUserInput(value); onSend()}} />
+        } 
+        else if(ui == 'groupSize'){
+            return <GroupSizeUi onSelectedOption = {(value:string) => {setUserInput(value); onSend()}} />
+        } else if(ui == 'tripDuration'){
+
+        } else if(ui == 'final'){
+
+        }
+        return null;
+    }
+
   return (
     <div className='h-[85vh] flex flex-col'>
-        {messages?.length === 0 && <EmptyBoxState />}
+        {messages?.length === 0 && <EmptyBoxState onSelectedOption={(v:string) => {setUserInput(v); onSend()}} />}
         {/* Display messages */}
         <section className='flex-1 overflow-y-auto p-4'>
             {messages.map((msg:Message, index) =>(
@@ -56,6 +74,7 @@ const ChatBox = () => {
              <div className='flex justify-start mt-2'key={index}>
                 <div className='max-w-lg bg-gray-100 text-black px-4 py-2 rounded-lg'>
                     {msg.content}
+                    {RenderGenerativeUi(msg.ui ?? '')}
                 </div>
             </div>
             ))}
