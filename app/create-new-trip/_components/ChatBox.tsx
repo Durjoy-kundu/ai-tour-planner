@@ -9,6 +9,8 @@ import axios from 'axios';
 import EmptyBoxState from './EmptyBoxState';
 import GroupSizeUi from './GroupSizeUi';
 import BudgetUi from './BudgetUi';
+import FinalUi from './FinalUi';
+import SelectDaysUi from './SelectDaysUi';
 
 type Message = {
     role:string,
@@ -51,9 +53,9 @@ const ChatBox = () => {
         else if(ui == 'groupSize'){
             return <GroupSizeUi onSelectedOption = {(value:string) => {setUserInput(value); onSend()}} />
         } else if(ui == 'tripDuration'){
-
+            return <SelectDaysUi onSelectedOption = {(value:string) => {setUserInput(value); onSend()}} />
         } else if(ui == 'final'){
-
+            return <FinalUi viewTrip={() => {}} /> // Assuming viewTrip is a function to view the trip
         }
         return null;
     }
