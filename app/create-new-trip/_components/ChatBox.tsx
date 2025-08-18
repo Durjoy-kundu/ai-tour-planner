@@ -1,6 +1,6 @@
 
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button} from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {Loader, Send} from 'lucide-react';
@@ -18,47 +18,139 @@ type Message = {
     ui?: string,
 }
 
+ export type TripInfo = {
+    budget: string,
+    destination: string,
+    duration: string,
+    group_size: string,
+    origin: string,
+    hotels: any,
+    itinerary: any
+
+}
+
 const ChatBox = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [userInput, setUserInput] = useState<string>('');
     const [loading, setLoading] = useState(false);
-    const onSend = async() => {
-        // Handle send message logic
-        if (!userInput.trim()) return; // Prevent sending empty messages
-        setUserInput('');
-        const newMsg:Message={
-            role:'user',
-            content:userInput
+    const [isFinal, setIsFinal] = useState(false);
+    const [tripDetails, setTripDetails] = useState<TripInfo>();
+
+
+    // const onSend = async() => {
+    //     // Handle send message logic
+    //     console.log("IInside onSend");
+    //     if (!userInput.trim()) return; // Prevent sending empty messages
+    //     setLoading(true);
+        
+
+ 
+    //     const newMsg:Message={
+    //         role:'user',
+    //         content:userInput ?? ''
+    //     }
+
+    //     setUserInput('');
+    //     console.log("HERE")
+
+    //     setMessages((prev:Message[]) => [...prev, newMsg]);
+
+    //     const result = await axios.post('/api/aimodel',{
+    //         messages:[...messages, newMsg],
+    //         isFinal: isFinal
+    //     })
+
+    //     console.log("Trip", result.data);
+
+
+
+    //     !isFinal && setMessages((prev:Message[]) => [...prev,{
+    //         role:'assistant',
+    //         content: result?.data?.resp,
+    //         ui: result?.data?.ui
+    //     }]);
+
+    //     if(isFinal) {
+    //         setTripDetails(result?.data?.trip_plan);
+    //     }
+
+    //     console.log(result.data);
+    //     setLoading(false);
+    // }
+
+    // onsend from ai
+     const onSend = async () => {
+        if (!userInput.trim()) return;
+        setLoading(true);
+
+        try {
+            const newMsg: Message = {
+                role: 'user',
+                content: userInput
+            };
+
+            setMessages(prev => [...prev, newMsg]);
+            setUserInput('');
+
+            const result = await axios.post('/api/aimodel', {
+                messages: [...messages, newMsg],
+                isFinal: false
+            });
+
+            if (result.data) {
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: result.data.resp,
+                    ui: result.data.ui
+                }]);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
         }
+    };
 
-        setMessages((prev:Message[]) => [...prev, newMsg]);
-
-        const result = await axios.post('/api/aimodel',{
-            messages:[...messages, newMsg]
-        })
-
-        setMessages((prev:Message[]) => [...prev,{
-            role:'assistant',
-            content: result?.data?.resp,
-            ui: result?.data?.ui
-        }]);
-        console.log(result.data);
-        setLoading(false);
-    }
-
-    const RenderGenerativeUi = (ui:string) => {
+    const RenderGenerativeUi = (ui:string, isLatestMessage: boolean) => {
+        // Only render UI components for the latest assistant message
+        if (!isLatestMessage) return null;
+        
         if(ui=='budget'){
-             return <BudgetUi onSelectedOption = {(value:string) => {setUserInput(value); onSend()}} />
+             return <BudgetUi onSelectedOption = {(value:string) => {
+                setUserInput(value); 
+                setTimeout(() => onSend(), 100);
+             }} />
         } 
+
         else if(ui == 'groupSize'){
-            return <GroupSizeUi onSelectedOption = {(value:string) => {setUserInput(value); onSend()}} />
-        } else if(ui == 'tripDuration'){
-            return <SelectDaysUi onSelectedOption = {(value:string) => {setUserInput(value); onSend()}} />
-        } else if(ui == 'final'){
-            return <FinalUi viewTrip={() => {}} /> // Assuming viewTrip is a function to view the trip
+            return <GroupSizeUi onSelectedOption = {(value:string) => {
+                setUserInput(value); 
+                setTimeout(() => onSend(), 100);
+            }} />
+        } 
+        
+        else if(ui == 'tripDuration' || ui == 'TripDuration'){
+            return <SelectDaysUi onSelectedOption = {(value:string) => {
+                setUserInput(value); 
+                setTimeout(() => onSend(), 100);
+            }} />
+        }
+        else if(ui == 'final'){
+            return <FinalUi viewTrip={() => console.log('View trip clicked')} 
+            disable={!tripDetails}
+            />
         }
         return null;
     }
+
+    useEffect(()=>{
+        const lastMsg = messages[messages.length - 1];
+        if(lastMsg?.ui == 'final' && !isFinal){
+            setIsFinal(true);
+            setUserInput('Generate my trip plan');
+            setTimeout(() => onSend(), 500);
+        }
+    },[messages, isFinal])
 
   return (
     <div className='h-[85vh] flex flex-col'>
@@ -76,7 +168,7 @@ const ChatBox = () => {
              <div className='flex justify-start mt-2'key={index}>
                 <div className='max-w-lg bg-gray-100 text-black px-4 py-2 rounded-lg'>
                     {msg.content}
-                    {RenderGenerativeUi(msg.ui ?? '')}
+                    {RenderGenerativeUi(msg.ui ?? '', index === messages.length - 1)}
                 </div>
             </div>
             ))}

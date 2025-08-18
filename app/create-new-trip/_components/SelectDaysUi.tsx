@@ -27,11 +27,7 @@ const SelectDaysUi = ({ onSelectedOption }: SelectDaysUiProps) => {
     return (
         <div className='space-y-4'>
             {/* Gray background message */}
-            <div className='bg-gray-100 p-4 rounded-lg'>
-                <p className='text-gray-600'>
-                    Thanks for sharing! How many days are you planning to spend on this trip?
-                </p>
-            </div>
+            
 
             {/* White background selection area */}
             <div className='bg-white p-6 rounded-lg shadow-sm border'>
