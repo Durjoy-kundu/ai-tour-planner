@@ -8,7 +8,7 @@ export const openai = new OpenAI({
 });
 const PROMPT = `You are an AI Trip Planner Agent. Your goal is to help the user plan a trip by **asking one relevant trip-related question at a time**.
 
-Only ask questions about the following details in order, and wait for the user's answer before asking the next: 
+ Only ask questions about the following details in order, and wait for the user’s answer before asking the next: 
 
 1. Starting location (source) 
 2. Destination city or country 
@@ -17,27 +17,14 @@ Only ask questions about the following details in order, and wait for the user's
 5. Trip duration (number of days) 
 6. Travel interests (e.g., adventure, sightseeing, cultural, food, nightlife, relaxation) 
 7. Special requirements or preferences (if any)
-
-IMPORTANT RULES:
-- Do not ask multiple questions at once, and never ask irrelevant questions.
-- If any answer is missing or unclear, politely ask the user to clarify before proceeding.
-- Always maintain a conversational, interactive style while asking questions.
-- Once a user has answered a question (like selecting days), acknowledge their answer and move to the next question WITHOUT showing the same UI component again.
-- Only show UI components when asking a NEW question, not when acknowledging answers.
-- After collecting ALL 7 pieces of information (source, destination, group size, budget, duration, interests, special requirements), use "final" UI to generate the trip plan.
-
-UI Component Guidelines:
-- Use 'groupSize' ONLY when first asking about group size
-- Use 'budget' ONLY when first asking about budget  
-- Use 'TripDuration' ONLY when first asking about trip duration (number of days)
-- Use 'final' when generating the complete final output
-- Use empty string ("") when acknowledging answers or asking follow-up text questions
-- NEVER repeat the same UI component after the user has already answered that question
-
-Always return a **strict JSON response only** (no explanations or extra text) with following JSON schema:
+Do not ask multiple questions at once, and never ask irrelevant questions.
+If any answer is missing or unclear, politely ask the user to clarify before proceeding.
+Always maintain a conversational, interactive style while asking questions.
+Along wth response also send which ui component to display for generative UI for example 'budget/groupSize/TripDuration/final) , where Final means AI generating complete final outpur
+Once all required information is collected, generate and return a **strict JSON response only** (no explanations or extra text) with following JSON schema:
 {
-"resp": "Your response text here",
-"ui": "groupSize/budget/TripDuration/final or empty string"
+resp:'Text Resp',
+ui:'budget/groupSize/TripDuration/final)'
 }
 `
 
@@ -180,30 +167,37 @@ export async function POST(request: NextRequest) {
         ...messages
     ],
   });
-  console.log(completion.choices[0].message);
-  const message=completion.choices[0].message;
-  
-  try {
-    const parsedContent = JSON.parse(message.content ?? '{}');
-    return NextResponse.json(parsedContent);
-  } catch (parseError) {
-    console.error('JSON parsing error:', parseError);
-    console.error('Raw content:', message.content);
-    // Return a fallback response if JSON parsing fails
-    return NextResponse.json({
-      resp: "I apologize, but there was an issue processing your request. Please try again.",
-      ui: ""
-    });
+    const message = completion.choices[0].message;
+    let content = message.content ?? '';
+
+    try {
+      const parsed = JSON.parse(content);
+      return NextResponse.json(parsed);
+    } catch (err) {
+      console.error("Invalid JSON from AI:", content);
+      return NextResponse.json({
+        resp: "Sorry, I didn’t understand that. Let's continue — can you tell me your trip duration?",
+        ui: "tripDuration"
+      });
+    }
+  } catch (error) {
+    console.error('Error occurred while processing request:', error);
+    return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
   }
 }
-catch (error) {
-  console.error('Error occurred while processing request:', error);
-  return NextResponse.json({ 
-    resp: "Sorry, there was an error processing your request. Please try again.",
-    ui: ""
-  }, { status: 500 });
-}
-}
+//   console.log(completion.choices[0].message);
+//   const message=completion.choices[0].message;
+//   return NextResponse.json(JSON.parse(message.content??''));
+// }
+// catch (error) {
+//   console.error('Error occurred while processing request:', error);
+//   return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
+// }
+
+
+
+//........
+// }
 // import { NextRequest } from "next/server";
 // import OpenAI from 'openai';
 // import { NextResponse } from "next/server";

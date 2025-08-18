@@ -11,6 +11,11 @@ import GroupSizeUi from './GroupSizeUi';
 import BudgetUi from './BudgetUi';
 import FinalUi from './FinalUi';
 import SelectDaysUi from './SelectDaysUi';
+import { api } from '@/convex/_generated/api';
+import { useMutation } from 'convex/react';
+import { useUserDetail } from '@/app/provider';
+import { v4 as uuidv4 } from 'uuid';
+
 
 type Message = {
     role:string,
@@ -35,81 +40,89 @@ const ChatBox = () => {
     const [loading, setLoading] = useState(false);
     const [isFinal, setIsFinal] = useState(false);
     const [tripDetails, setTripDetails] = useState<TripInfo>();
+    const SaveTripDetail = useMutation(api.tripDetail.CreateTripDetail);
+    const {userDetail, setUserDetail} = useUserDetail();
 
 
-    // const onSend = async() => {
-    //     // Handle send message logic
-    //     console.log("IInside onSend");
-    //     if (!userInput.trim()) return; // Prevent sending empty messages
-    //     setLoading(true);
+    const onSend = async() => {
+        // Handle send message logic
+        console.log("IInside onSend");
+        if (!userInput.trim()) return; // Prevent sending empty messages
+        setLoading(true);
         
 
  
-    //     const newMsg:Message={
-    //         role:'user',
-    //         content:userInput ?? ''
-    //     }
+        const newMsg:Message={
+            role:'user',
+            content:userInput ?? ''
+        }
 
-    //     setUserInput('');
-    //     console.log("HERE")
+        setUserInput('');
+        console.log("HERE")
 
-    //     setMessages((prev:Message[]) => [...prev, newMsg]);
+        setMessages((prev:Message[]) => [...prev, newMsg]);
 
-    //     const result = await axios.post('/api/aimodel',{
-    //         messages:[...messages, newMsg],
-    //         isFinal: isFinal
-    //     })
+        const result = await axios.post('/api/aimodel',{
+            messages:[...messages, newMsg],
+            isFinal: isFinal
+        })
 
-    //     console.log("Trip", result.data);
+        console.log("Trip", result.data);
 
 
 
-    //     !isFinal && setMessages((prev:Message[]) => [...prev,{
-    //         role:'assistant',
-    //         content: result?.data?.resp,
-    //         ui: result?.data?.ui
-    //     }]);
+        !isFinal && setMessages((prev:Message[]) => [...prev,{
+            role:'assistant',
+            content: result?.data?.resp,
+            ui: result?.data?.ui
+        }]);
 
-    //     if(isFinal) {
-    //         setTripDetails(result?.data?.trip_plan);
-    //     }
+        if(isFinal) {
+            setTripDetails(result?.data?.trip_plan);
+            const tripId = uuidv4();
+           await SaveTripDetail({
+                tripDetail: result?.data?.trip_plan,
+                tripId: tripId,
+                uid:userDetail?._id ,
+            });
+        }
 
-    //     console.log(result.data);
-    //     setLoading(false);
-    // }
+        console.log(result.data);
+        setLoading(false);
+    }
 
     // onsend from ai
-     const onSend = async () => {
-        if (!userInput.trim()) return;
-        setLoading(true);
+    //  const onSend = async () => {
+    //     if (!userInput.trim()) return;
+    //     setLoading(true);
 
-        try {
-            const newMsg: Message = {
-                role: 'user',
-                content: userInput
-            };
+    //     try {
+    //         const newMsg: Message = {
+    //             role: 'user',
+    //             content: userInput
+    //         };
 
-            setMessages(prev => [...prev, newMsg]);
-            setUserInput('');
+    //         setMessages(prev => [...prev, newMsg]);
+    //         setUserInput('');
 
-            const result = await axios.post('/api/aimodel', {
-                messages: [...messages, newMsg],
-                isFinal: false
-            });
+    //         const result = await axios.post('/api/aimodel', {
+    //             messages: [...messages, newMsg],
+    //             isFinal: isFinal
+    //         });
 
-            if (result.data) {
-                setMessages(prev => [...prev, {
-                    role: 'assistant',
-                    content: result.data.resp,
-                    ui: result.data.ui
-                }]);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    //         if (result.data) {
+    //             setMessages(prev => [...prev, {
+    //                 role: 'assistant',
+    //                 content: result.data.resp,
+    //                 ui: result.data.ui
+    //             }]);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const RenderGenerativeUi = (ui:string, isLatestMessage: boolean) => {
         // Only render UI components for the latest assistant message
