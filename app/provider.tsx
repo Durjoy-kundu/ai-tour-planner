@@ -13,7 +13,7 @@ import { UserDetailContext } from '@/context/UserDetailContext';
   }>) => {
 
     const CreateUser = useMutation(api.user.CreateNewUser);
-    const {userDetail, setUserDetail} = useState<any>();
+    const [userDetail, setUserDetail] = useState<any>();
     const {user} = useUser();
 
     useEffect(() => {
@@ -45,7 +45,7 @@ import { UserDetailContext } from '@/context/UserDetailContext';
     )
   }
 
-  export default provider
+  export default provider;
   export const useUserDetail = () => {
     return useContext(UserDetailContext);
   }

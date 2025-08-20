@@ -124,9 +124,9 @@ const ChatBox = () => {
     //     }
     // };
 
-    const RenderGenerativeUi = (ui:string, isLatestMessage: boolean) => {
+    const RenderGenerativeUi = (ui:string) => {
         // Only render UI components for the latest assistant message
-        if (!isLatestMessage) return null;
+        // if (!isLatestMessage) return null;
         
         if(ui=='budget'){
              return <BudgetUi onSelectedOption = {(value:string) => {
@@ -181,7 +181,8 @@ const ChatBox = () => {
              <div className='flex justify-start mt-2'key={index}>
                 <div className='max-w-lg bg-gray-100 text-black px-4 py-2 rounded-lg'>
                     {msg.content}
-                    {RenderGenerativeUi(msg.ui ?? '', index === messages.length - 1)}
+                    {/* {RenderGenerativeUi(msg.ui ?? '', index === messages.length - 1)} */}
+                    {RenderGenerativeUi(msg.ui ?? '')}
                 </div>
             </div>
             ))}
