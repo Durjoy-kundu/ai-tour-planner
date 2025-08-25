@@ -2,6 +2,7 @@ import React from 'react'
 import { Timeline } from "@/components/ui/timeline";
 import { Wallet } from 'lucide-react';
 import { Star } from 'lucide-react';
+import Image from "next/image";
 
 
 const TRIP_DATA = {
@@ -95,15 +96,20 @@ const Itinerary = () => {
     {
       title: "Recommended Hotels",
       content: (
-        <div>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
           {TRIP_DATA.hotels.map((hotel, index) => (
-            <div key={index}>
-              <Image src={'/placeholder'} alt='place-image' width={400} height={200} />
+            <div key={index} className='flex flex-col gap-2'>
+              <Image src={'/trvel.svg'} alt='place-image' width={400} height={200}  className='rounded-xl shadow object-cover mb-2'/>
               <h1 className='font-semibold text-lg'>{hotel.hotel_name}</h1>
               <h2 className='text-gray-500'>{hotel.hotel_address}</h2>
-              <p className='flex gap-2 text-green-600 '><Wallet  /> {hotel.price_per_night}</p>
-              <p> <Star/>{hotel.rating}</p>
 
+
+              <div className='flex justify-between items-center'>
+                  <p className='flex gap-2 text-green-600 '><Wallet  /> {hotel.price_per_night}</p>
+                  <p className='text-yellow-500 flex gap-2'> <Star/>{hotel.rating}</p>
+              </div>
+              <p className='line-clamp-2 text-gray-500 pb-2'>{hotel?.description}</p>
+              
             </div>
           ))}
         </div>
