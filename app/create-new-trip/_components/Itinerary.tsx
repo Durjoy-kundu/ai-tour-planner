@@ -1,10 +1,13 @@
 import React from 'react'
 import { Timeline } from "@/components/ui/timeline";
+import { Wallet } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 
 const TRIP_DATA = {
-  budget: "Cheap",
+  origin: "Dhaka",
   destination: "Mumbai",
+  budget: "Cheap",
   duration: "4 days",
   group_size: "2",
   hotels: [
@@ -88,9 +91,31 @@ const TRIP_DATA = {
 
 }
 const Itinerary = () => {
+  const data = [
+    {
+      title: "Recommended Hotels",
+      content: (
+        <div>
+          {TRIP_DATA.hotels.map((hotel, index) => (
+            <div key={index}>
+              <Image src={'/placeholder'} alt='place-image' width={400} height={200} />
+              <h1 className='font-semibold text-lg'>{hotel.hotel_name}</h1>
+              <h2 className='text-gray-500'>{hotel.hotel_address}</h2>
+              <p className='flex gap-2 text-green-600 '><Wallet  /> {hotel.price_per_night}</p>
+              <p> <Star/>{hotel.rating}</p>
+
+            </div>
+          ))}
+        </div>
+      ),
+    },
+   
+  ];
   return (
-    <div>Itinerary</div>
-  )
+    <div className="relative w-full h-[83vh] overflow-y-auto ">
+      <Timeline data={data} tripData={TRIP_DATA} />
+    </div>
+  );
 }
 
 export default Itinerary
