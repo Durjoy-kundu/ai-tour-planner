@@ -34,7 +34,7 @@ type Message = {
 
 }
 
-type Hotel = {
+export type Hotel = {
     hotel_name: string;
     hotel_address: string;
     price_per_night: string;
@@ -48,7 +48,7 @@ type Hotel = {
     description: string;
 }
 
-type Activity = {
+export type Activity = {
     place_name: string;
     place_details: string;
     place_image_url: string;
@@ -63,7 +63,7 @@ type Activity = {
 
 }
 
-type Itinerary = {
+export type Itinerary = {
     day: number;
     day_plan: string;
     best_time_to_visit_day: string;

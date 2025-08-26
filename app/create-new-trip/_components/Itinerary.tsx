@@ -1,8 +1,12 @@
 import React from 'react'
 import { Timeline } from "@/components/ui/timeline";
-import { Wallet } from 'lucide-react';
+import { Clock, ExternalLink, Ticket, Wallet } from 'lucide-react';
 import { Star } from 'lucide-react';
 import Image from "next/image";
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import HotelCardItem from './HotelCardItem';
+import PlaceCardItem from './PlaceCardItem';
 
 
 const TRIP_DATA = {
@@ -49,9 +53,13 @@ const TRIP_DATA = {
       rating: 7.3
     }
   ],
-  itinerary: {
-    activities: [
-      {
+  itinerary: [
+    {
+      "day": 1,
+      "day_plan": "Arrival on mumbai, explore",
+      "best_time_to_visit": "Early morning to avoid crowds",
+      activities: [
+        {
         best_time_to_visit: "Early morning to avoid crowds",
         geo_coordinates: { latitude: 18.921984, longitude: 72.834654 },
         place_address: "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001, India",
@@ -89,32 +97,35 @@ const TRIP_DATA = {
       }
     ]
   }
-
+]
 }
+
 const Itinerary = () => {
   const data = [
     {
       title: "Recommended Hotels",
       content: (
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           {TRIP_DATA.hotels.map((hotel, index) => (
-            <div key={index} className='flex flex-col gap-2'>
-              <Image src={'/trvel.svg'} alt='place-image' width={400} height={200}  className='rounded-xl shadow object-cover mb-2'/>
-              <h1 className='font-semibold text-lg'>{hotel.hotel_name}</h1>
-              <h2 className='text-gray-500'>{hotel.hotel_address}</h2>
-
-
-              <div className='flex justify-between items-center'>
-                  <p className='flex gap-2 text-green-600 '><Wallet  /> {hotel.price_per_night}</p>
-                  <p className='text-yellow-500 flex gap-2'> <Star/>{hotel.rating}</p>
-              </div>
-              <p className='line-clamp-2 text-gray-500 pb-2'>{hotel?.description}</p>
-              
-            </div>
+            <HotelCardItem key={index} hotel={hotel} />
           ))}
         </div>
       ),
     },
+
+    ...TRIP_DATA?.itinerary.map((dayData) => ({
+          title: `Day ${dayData.day}`,
+          content:(
+            <div>
+              <p>Best Time: {dayData?.best_time_to_visit}</p>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-2'>
+              {dayData?.activities.map((activity, idx) => (
+                  <PlaceCardItem  activity={activity} />
+              ))}
+            </div>
+            </div>
+          )
+    }))
    
   ];
   return (
