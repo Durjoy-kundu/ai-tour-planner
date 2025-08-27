@@ -1,9 +1,11 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import Image from "next/image";
 import { Hotel } from './ChatBox';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ExternalLink, Star, Wallet } from 'lucide-react';
+import axios from 'axios';
 
 
 type Props={
@@ -11,9 +13,28 @@ type Props={
 }
 
 const HotelCardItem = ({hotel}:Props ) => {
+  const [photoUrl,setPhotoUrl] = useState<string>();
+
+  useEffect(() => {
+    hotel && GetGooglePlaceDetail();
+  }, [hotel]);
+
+  const GetGooglePlaceDetail = async () => {
+    const response = await axios.post('/api/google-place-detail', {
+      placeName: hotel.hotel_name
+    });
+    if(response?.data?.error){
+      return;
+    }
+    // return response.data;
+    setPhotoUrl(response.data);
+  }
+
   return (
     <div  className='flex flex-col gap-2'>
-              <Image src={'/trvel.svg'} alt='place-image' width={400} height={200}  className='rounded-xl shadow object-cover mb-2'/>
+              <Image src={photoUrl?photoUrl:'/trvel.svg'} 
+              alt='place-image' 
+              width={400} height={200}  className='rounded-xl shadow object-cover mb-2'/>
               <h1 className='font-semibold text-lg'>{hotel.hotel_name}</h1>
               <h2 className='text-gray-500'>{hotel.hotel_address}</h2>
 
