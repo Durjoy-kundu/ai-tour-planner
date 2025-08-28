@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Image from "next/image";
 import { Hotel } from './ChatBox';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+
 import { ExternalLink, Star, Wallet } from 'lucide-react';
 import axios from 'axios';
 
