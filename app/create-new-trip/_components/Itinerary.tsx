@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import HotelCardItem from './HotelCardItem';
 import PlaceCardItem from './PlaceCardItem';
+import {useTripDetail} from '@/app/provider';
+
 
 
 const TRIP_DATA = {
@@ -101,12 +103,14 @@ const TRIP_DATA = {
 }
 
 const Itinerary = () => {
+  //@ts-ignore
+  const {tripDetailInfo, setTripDetailInfo} = useTripDetail();
   const data = [
     {
       title: "Recommended Hotels",
       content: (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          {TRIP_DATA.hotels.map((hotel, index) => (
+          {tripDetailInfo.map((hotel, index) => (
             <HotelCardItem key={index} hotel={hotel} />
           ))}
         </div>

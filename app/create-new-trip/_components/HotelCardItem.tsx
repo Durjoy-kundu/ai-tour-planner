@@ -27,7 +27,7 @@ const HotelCardItem = ({hotel}:Props ) => {
       return;
     }
     // return response.data;
-    setPhotoUrl(response.data);
+    setPhotoUrl(response?.data);
   }
 
   return (
