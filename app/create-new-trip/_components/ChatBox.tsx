@@ -78,6 +78,7 @@ const ChatBox = () => {
     const [tripDetails, setTripDetails] = useState<TripInfo>();
     const SaveTripDetail = useMutation(api.tripDetail.CreateTripDetail);
     const {userDetail, setUserDetail} = useUserDetail();
+    //@ts-ignore
     const {tripDetailInfo, setTripDetailInfo} = useTripDetail();
 
 
