@@ -1,6 +1,8 @@
 import {NextRequest} from "next/server";
 import OpenAI from 'openai';
 import { NextResponse } from "next/server";
+import { aj } from "../arcjet/route";
+import { currentUser } from "@clerk/nextjs/server";
 export const openai = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -152,6 +154,18 @@ Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and
 `
 export async function POST(request: NextRequest) {
     const { messages , isFinal } = await request.json();
+    const user = await currentUser();
+
+    const decision = await aj.protect(request, { userId:user?.primaryEmailAddress?.emailAddress??'', requested: isFinal? 5 : 0 });
+
+    // console.log(decision);
+    //@ts-ignore
+    if(decision?.reason?.remaining==0){
+      return NextResponse.json({
+        resp: "You have exceeded your request limit.No Free credit remains. Please try again later.",
+        ui: 'limit'
+      })
+    }
 
 
     try{

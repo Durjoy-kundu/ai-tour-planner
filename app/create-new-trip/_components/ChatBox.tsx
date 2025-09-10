@@ -205,7 +205,7 @@ const ChatBox = () => {
     },[messages, isFinal])
 
   return (
-    <div className='h-[85vh] flex flex-col'>
+    <div className='h-[85vh] flex flex-col border shadow rounded-2xl p-5'>
         {messages?.length === 0 && <EmptyBoxState onSelectedOption={(v:string) => {setUserInput(v); onSend()}} />}
         {/* Display messages */}
         <section className='flex-1 overflow-y-auto p-4'>

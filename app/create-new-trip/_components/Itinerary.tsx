@@ -145,7 +145,7 @@ const Itinerary = () => {
    
   ]: [];
   return (
-    <div className="relative w-full h-[83vh] overflow-y-auto ">
+    <div className="relative w-full h-[83vh] overflow-auto ">
       {/*@ts-ignore */}
       {tripData ? <Timeline data={data} tripData={tripData} />
        :
@@ -156,7 +156,7 @@ const Itinerary = () => {
           Getting to know you to build your perfect trip...
         </h2>
 
-       <Image src={'/trip.jpg'}  alt='travel' width={800} height={800}
+       <Image src={'/trip.jpg'}  alt='travel' width={'800'} height={800}
        className='w-full h-full object-cover rounded-3xl'
        />
         
