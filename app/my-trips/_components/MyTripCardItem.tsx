@@ -34,12 +34,12 @@ const MyTripCardItem = ({trip}: Props) => {
           setPhotoUrl(response?.data);
         }
   return (
-     <div className='p-5 shadow rounded-2xl'>
+     <Link href={'/view-trips/' + trip?.tripId} className='p-5 shadow rounded-2xl'>
                     <Image src={photoUrl?photoUrl:'./trvel.svg'} alt={trip.tripId} width={400} height={400} className='rounded-xl object-cover w-full h-[200px] '/>
                     <h2 className='flex gap-2 font-semibold text-xl mt-2 '
                     >{trip?.tripDetail?.origin}<ArrowBigRight/>{trip?.tripDetail?.destination}</h2>
                     <h2 className='mt-1.5 text-green-500'>{trip?.tripDetail?.duration} Trip With {trip?.tripDetail?.budget} Budget </h2>
-                </div>
+                </Link>
   )
 }
 
