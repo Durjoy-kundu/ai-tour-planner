@@ -6,6 +6,7 @@ import { useConvex } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Trip } from '@/app/my-trips/page';
 import Itinerary from '@/app/create-new-trip/_components/Itinerary';
+import GlobalMap from '@/app/create-new-trip/_components/GlobalMap';
 
 const ViewTrip = () => {
     const {tripid} = useParams();
@@ -31,8 +32,14 @@ const ViewTrip = () => {
         setTripDetailInfo(result?.tripDetail);
     }
   return (
-    <div> 
-        <Itinerary/>
+    <div className='grid grid-cols-5'> 
+      <div className='col-span-3'>
+          <Itinerary/>
+      </div>
+      <div className='col-span-2'>
+        <GlobalMap/>
+      </div>
+        
     </div>
   )
 }
