@@ -7,7 +7,7 @@ export default defineSchema({
     name: v.string(),
     imageUrl: v.string(),
     email: v.string(),
-    subscription: v.string(),
+    subscription:v.optional(v.string()),
 
   }),
   

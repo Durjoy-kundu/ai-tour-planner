@@ -19,7 +19,7 @@ export const CreateNewUser = mutation({
                 name: args.name,
                 email: args.email,
                 imageUrl: args.imageUrl,
-                subscription: "free"
+                // subscription: "free"
             }
             // Create user in database
             const result = await ctx.db.insert("UserTable", userData);
