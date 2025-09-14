@@ -127,7 +127,7 @@ const Itinerary = () => {
         </div>
       ),
     },
-    
+      
     ...tripData?.itinerary.map((dayData) => ({
           title: `Day ${dayData?.day}`,
           content:(

@@ -1,14 +1,15 @@
 import {NextRequest} from "next/server";
 import OpenAI from 'openai';
 import { NextResponse } from "next/server";
-import { aj } from "../arcjet/route";
+import { aj } from "@/utils/arcject";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { openai } from "@/utils/openai";
 
-export const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
+// export const openai = new OpenAI({
+//   baseURL: 'https://openrouter.ai/api/v1',
+//   apiKey: process.env.OPENROUTER_API_KEY,
   
-});
+// });
 const PROMPT = `You are an AI Trip Planner Agent. Your goal is to help the user plan a trip by **asking one relevant trip-related question at a time**.
 
  Only ask questions about the following details in order, and wait for the user’s answer before asking the next: 
@@ -167,7 +168,7 @@ export async function POST(request: NextRequest) {
     //@ts-ignore
     if(decision?.reason?.remaining==0 && !hasPremiumAccess){
       return NextResponse.json({
-        resp: "You have exceeded your request limit.No Free credit remains. Please try again later.",
+        resp: "No Free credit remains. Please try again later.",
         ui: 'limit'
       })
     }
